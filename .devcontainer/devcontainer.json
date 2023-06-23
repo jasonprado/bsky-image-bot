@@ -1,0 +1,17 @@
+{
+  "name": "bsky-image-bot",
+  "image": "mcr.microsoft.com/devcontainers/typescript-node:0-20",
+  "features": {
+    "ghcr.io/devcontainers/features/github-cli:1": {},
+    // "ghcr.io/devcontainers-contrib/features/actions-runner:1": {},
+    "ghcr.io/joshuanianji/devcontainer-features/github-cli-persistence:0": {}
+  },
+  "customizations": {
+    "vscode": {
+      "extensions": [
+		"esbenp.prettier-vscode",
+		"GitHub.copilot"
+	]
+    }
+  }
+}

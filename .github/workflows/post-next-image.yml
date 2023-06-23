@@ -1,0 +1,42 @@
+name: 'bsky-image-bot Post Next Image'
+on:
+  # Comment out workflow_dispatch and uncomment the schedule to run daily
+  workflow_dispatch:
+  # schedule:
+  #  - cron: "30 5 * * *"
+
+jobs:
+  # On some job, do some stuff and persist variables meant to be re-used in other jobs
+  post-next-image:
+    name: Post Next Image
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Use Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 20
+
+      - name: Install Yarn
+        run: npm install -g yarn
+
+      - name: Install dependencies
+        run: yarn install
+
+      - name: Do the post
+        env:
+          BSKY_IDENTIFIER: ${{ secrets.BSKY_IDENTIFIER }}
+          BSKY_PASSWORD: ${{ secrets.BSKY_PASSWORD }}
+          LAST_IMAGE_NAME: ${{ vars.LAST_IMAGE_NAME }}
+        run: |
+          echo "Previous image name: $LAST_IMAGE_NAME"
+          echo "Authenticating with user identifier: $BSKY_IDENTIFIER"
+          NEW_LAST_IMAGE_NAME=$(yarn --silent run start)
+          echo "NEW_LAST_IMAGE_NAME=$NEW_LAST_IMAGE_NAME" >> $GITHUB_ENV
+
+      - uses: action-pack/set-variable@v1
+        with:
+          name: 'LAST_IMAGE_NAME'
+          value: ${{ env.NEW_LAST_IMAGE_NAME }}
+          token: ${{ secrets.REPO_ACCESS_TOKEN }}
